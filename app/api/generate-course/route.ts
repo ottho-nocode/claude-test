@@ -10,39 +10,51 @@ const openai = new OpenAI({
 
 export async function POST(request: NextRequest) {
   try {
-    const { youtubeUrl } = await request.json()
+    const body = await request.json()
+    const { youtubeUrl, audioUrl, videoTitle: providedTitle } = body
 
-    if (!youtubeUrl) {
+    if (!youtubeUrl && !audioUrl) {
       return NextResponse.json(
-        { error: 'URL YouTube requise' },
+        { error: 'URL YouTube ou fichier audio requis' },
         { status: 400 }
       )
     }
 
-    const videoId = extractVideoId(youtubeUrl)
-    if (!videoId) {
-      return NextResponse.json(
-        { error: 'URL YouTube invalide' },
-        { status: 400 }
-      )
+    let videoTitle: string
+    let rawTranscript: string
+    let finalUrl: string
+
+    if (audioUrl) {
+      // Mode upload de fichier
+      videoTitle = providedTitle || 'Tutoriel uploadé'
+      finalUrl = audioUrl
+
+      // ÉTAPE 1: Transcription avec Whisper
+      rawTranscript = await transcribeAudio(audioUrl)
+    } else {
+      // Mode URL YouTube
+      const videoId = extractVideoId(youtubeUrl!)
+      if (!videoId) {
+        return NextResponse.json(
+          { error: 'URL YouTube invalide' },
+          { status: 400 }
+        )
+      }
+
+      videoTitle = `Tutoriel YouTube - ${videoId}`
+      finalUrl = youtubeUrl!
+
+      // Pour YouTube, utiliser une transcription simulée (nécessite service tiers pour l'audio)
+      rawTranscript = getSimulatedTranscript()
     }
 
-    // ÉTAPE 1: Extraction du titre de la vidéo (via YouTube Data API ou simulation)
-    // Pour cette démo, nous utilisons un titre générique
-    const videoTitle = `Tutoriel YouTube - ${videoId}`
-
-    // ÉTAPE 2: Extraction audio et transcription avec Whisper
-    // NOTE: Cette section nécessite un service tiers pour extraire l'audio
-    // Pour l'instant, nous utilisons une transcription simulée pour la démo
-    const rawTranscript = await getTranscript(videoId)
-
-    // ÉTAPE 3: Structuration pédagogique avec GPT-4o
+    // ÉTAPE 2: Structuration pédagogique avec GPT-4o
     const structuredChapters = await structureContent(rawTranscript, videoTitle)
 
-    // ÉTAPE 4: Sauvegarde dans la base de données
+    // ÉTAPE 3: Sauvegarde dans la base de données
     const course = await prisma.course.create({
       data: {
-        youtube_url: youtubeUrl,
+        youtube_url: finalUrl,
         video_title: videoTitle,
         raw_transcript: rawTranscript,
         structured_chapters: JSON.stringify(structuredChapters),
@@ -56,17 +68,69 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Erreur lors de la génération du cours:', error)
     return NextResponse.json(
-      { error: 'Erreur lors de la génération du cours' },
+      {
+        error: 'Erreur lors de la génération du cours',
+        details: error instanceof Error ? error.message : 'Erreur inconnue'
+      },
       { status: 500 }
     )
   }
 }
 
-async function getTranscript(videoId: string): Promise<string> {
-  // TODO: Implémenter l'extraction audio via un service tiers (ex: youtube-dl, yt-dlp)
-  // puis la transcription via OpenAI Whisper
+async function transcribeAudio(audioUrl: string): Promise<string> {
+  try {
+    console.log('Téléchargement du fichier audio depuis:', audioUrl)
 
-  // Pour la démo, retourne une transcription simulée
+    // Télécharger le fichier audio
+    const audioResponse = await fetch(audioUrl)
+    if (!audioResponse.ok) {
+      throw new Error('Impossible de télécharger le fichier audio')
+    }
+
+    const audioBlob = await audioResponse.blob()
+    const audioFile = new File([audioBlob], 'audio.mp3', { type: audioBlob.type })
+
+    console.log('Transcription en cours avec Whisper...')
+
+    // Appeler Whisper pour la transcription
+    const transcription = await openai.audio.transcriptions.create({
+      file: audioFile,
+      model: 'whisper-1',
+      response_format: 'verbose_json',
+      timestamp_granularities: ['segment'],
+    })
+
+    console.log('Transcription terminée')
+
+    // Formater la transcription avec timestamps
+    let formattedTranscript = ''
+
+    if ('segments' in transcription && Array.isArray(transcription.segments)) {
+      formattedTranscript = transcription.segments
+        .map((segment: any) => {
+          const start = formatTimestamp(segment.start)
+          return `[${start}] ${segment.text}`
+        })
+        .join('\n')
+    } else {
+      // Fallback si pas de segments
+      formattedTranscript = `[00:00] ${transcription.text}`
+    }
+
+    return formattedTranscript
+  } catch (error) {
+    console.error('Erreur lors de la transcription:', error)
+    throw new Error(`Échec de la transcription: ${error instanceof Error ? error.message : 'Erreur inconnue'}`)
+  }
+}
+
+function formatTimestamp(seconds: number): string {
+  const mins = Math.floor(seconds / 60)
+  const secs = Math.floor(seconds % 60)
+  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+}
+
+function getSimulatedTranscript(): string {
   return `
     [00:00] Bonjour à tous, aujourd'hui nous allons apprendre à créer une application web moderne.
     [00:15] Commençons par installer Node.js sur votre ordinateur. Allez sur nodejs.org et téléchargez la dernière version LTS.
@@ -88,7 +152,7 @@ async function structureContent(
   try {
     const systemPrompt = `Tu es un expert pédagogique spécialisé dans la création de guides d'apprentissage structurés.
 
-Ton rôle est d'analyser une transcription de tutoriel vidéo et de la découper en chapitres d'apprentissage logiques.
+Ton rôle est d'analyser une transcription de tutoriel et de la découper en chapitres d'apprentissage logiques.
 
 Règles importantes:
 - Chaque chapitre doit durer entre 45 secondes et 2 minutes
@@ -114,7 +178,7 @@ Format de sortie JSON attendu:
   ]
 }`
 
-    const userPrompt = `Titre de la vidéo: ${videoTitle}
+    const userPrompt = `Titre: ${videoTitle}
 
 Transcription avec timestamps:
 ${transcript}
