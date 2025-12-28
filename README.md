@@ -2,6 +2,32 @@
 
 Une application web éducative qui transforme des tutoriels YouTube longs en guides d'apprentissage interactifs étape par étape.
 
+## 🚀 Déploiement rapide (sans installation)
+
+### Option 1: Déployer sur Vercel (1-click)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/VOTRE-USERNAME/VOTRE-REPO&env=OPENAI_API_KEY&envDescription=Clé%20API%20OpenAI%20requise&project-name=youtube-learning-guide&repository-name=youtube-learning-guide)
+
+**Après le déploiement :** Ajouter votre clé API OpenAI dans les variables d'environnement Vercel.
+
+### Option 2: Déployer avec Docker (local)
+
+```bash
+# Cloner le repo
+git clone https://github.com/VOTRE-USERNAME/VOTRE-REPO.git
+cd VOTRE-REPO
+
+# Lancer le script de déploiement automatique
+chmod +x deploy.sh
+./deploy.sh
+```
+
+Puis accéder à **http://localhost:3000**
+
+📖 **[Guide de déploiement complet →](DEPLOYMENT.md)**
+
+---
+
 ## Fonctionnalités
 
 - **Page d'accueil** : Saisie d'URL YouTube avec génération automatique du cours

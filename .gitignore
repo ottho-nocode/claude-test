@@ -36,5 +36,12 @@ next-env.d.ts
 # prisma
 prisma/dev.db
 prisma/dev.db-journal
-
 /generated/prisma
+
+# docker
+data/
+*.log
+
+# production databases
+*.db
+*.db-journal
