@@ -1,0 +1,22 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Course {
+  id                  String   @id @default(uuid())
+  youtube_url         String
+  video_title         String
+  raw_transcript      String
+  structured_chapters String   // JSON stored as string
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+}
