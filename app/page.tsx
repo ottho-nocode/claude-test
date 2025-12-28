@@ -46,7 +46,7 @@ export default function Home() {
   const handleFileUpload = async () => {
     if (!audioFile) return
 
-    setProgress('Upload du fichier...')
+    setProgress('Upload et transcription en cours...')
 
     const formData = new FormData()
     formData.append('file', audioFile)
@@ -59,30 +59,10 @@ export default function Home() {
     const data = await response.json()
 
     if (!response.ok) {
-      throw new Error(data.error || 'Erreur lors de l\'upload')
+      throw new Error(data.error || data.details || 'Erreur lors du traitement')
     }
 
-    setProgress('Transcription en cours...')
-
-    // Générer le cours avec le fichier uploadé
-    const courseResponse = await fetch('/api/generate-course', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        audioUrl: data.url,
-        videoTitle: audioFile.name.replace(/\.[^/.]+$/, ''),
-      }),
-    })
-
-    const courseData = await courseResponse.json()
-
-    if (!courseResponse.ok) {
-      throw new Error(courseData.error || 'Erreur lors de la génération du cours')
-    }
-
-    router.push(`/course/${courseData.courseId}`)
+    router.push(`/course/${data.courseId}`)
   }
 
   const handleYoutubeUrl = async () => {
