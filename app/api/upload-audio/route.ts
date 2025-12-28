@@ -3,6 +3,16 @@ import OpenAI from 'openai'
 import type { StructuredCourse } from '@/types/course'
 import { prisma } from '@/lib/prisma'
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '25mb',
+    },
+  },
+}
+
+export const maxDuration = 300 // 5 minutes
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 })
@@ -23,7 +33,7 @@ export async function POST(request: NextRequest) {
     const maxSize = 25 * 1024 * 1024 // 25MB
     if (file.size > maxSize) {
       return NextResponse.json(
-        { error: 'Le fichier est trop volumineux. Maximum 25MB' },
+        { error: `Le fichier est trop volumineux (${(file.size / 1024 / 1024).toFixed(2)} MB). Maximum 25MB pour Whisper.` },
         { status: 400 }
       )
     }
