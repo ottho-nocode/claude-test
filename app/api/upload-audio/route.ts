@@ -3,15 +3,9 @@ import OpenAI from 'openai'
 import type { StructuredCourse } from '@/types/course'
 import { prisma } from '@/lib/prisma'
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '25mb',
-    },
-  },
-}
-
+// Configuration pour Next.js App Router
 export const maxDuration = 300 // 5 minutes
+export const dynamic = 'force-dynamic'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -19,6 +13,15 @@ const openai = new OpenAI({
 
 export async function POST(request: NextRequest) {
   try {
+    const contentType = request.headers.get('content-type') || ''
+
+    if (!contentType.includes('multipart/form-data')) {
+      return NextResponse.json(
+        { error: 'Content-Type doit être multipart/form-data' },
+        { status: 400 }
+      )
+    }
+
     const formData = await request.formData()
     const file = formData.get('file') as File
 
@@ -33,12 +36,16 @@ export async function POST(request: NextRequest) {
     const maxSize = 25 * 1024 * 1024 // 25MB
     if (file.size > maxSize) {
       return NextResponse.json(
-        { error: `Le fichier est trop volumineux (${(file.size / 1024 / 1024).toFixed(2)} MB). Maximum 25MB pour Whisper.` },
+        {
+          error: `Fichier trop volumineux`,
+          details: `Taille: ${(file.size / 1024 / 1024).toFixed(2)} MB. Maximum: 25 MB (limite Whisper).`
+        },
         { status: 400 }
       )
     }
 
-    console.log('Transcription du fichier:', file.name, file.size, 'bytes')
+    console.log('📄 Fichier reçu:', file.name, `(${(file.size / 1024 / 1024).toFixed(2)} MB)`)
+    console.log('🎤 Début de la transcription...')
 
     // Transcrire directement avec Whisper
     const transcription = await openai.audio.transcriptions.create({
@@ -48,7 +55,7 @@ export async function POST(request: NextRequest) {
       timestamp_granularities: ['segment'],
     })
 
-    console.log('Transcription terminée')
+    console.log('✅ Transcription terminée')
 
     // Formater la transcription avec timestamps
     let formattedTranscript = ''
@@ -64,9 +71,13 @@ export async function POST(request: NextRequest) {
       formattedTranscript = `[00:00] ${transcription.text}`
     }
 
+    console.log('🤖 Structuration avec GPT-4o...')
+
     // Structurer avec GPT-4o
     const videoTitle = file.name.replace(/\.[^/.]+$/, '')
     const structuredChapters = await structureContent(formattedTranscript, videoTitle)
+
+    console.log('💾 Sauvegarde dans la base de données...')
 
     // Sauvegarder dans la base de données
     const course = await prisma.course.create({
@@ -78,15 +89,30 @@ export async function POST(request: NextRequest) {
       },
     })
 
+    console.log('🎉 Cours créé avec succès:', course.id)
+
     return NextResponse.json({
       courseId: course.id,
       message: 'Cours généré avec succès',
     })
   } catch (error) {
-    console.error('Erreur lors du traitement:', error)
+    console.error('❌ Erreur:', error)
+
+    // Gestion spécifique des erreurs OpenAI
+    if (error && typeof error === 'object' && 'error' in error) {
+      const openaiError = error as any
+      return NextResponse.json(
+        {
+          error: 'Erreur OpenAI',
+          details: openaiError.error?.message || openaiError.message || 'Erreur inconnue'
+        },
+        { status: 500 }
+      )
+    }
+
     return NextResponse.json(
       {
-        error: 'Erreur lors du traitement du fichier',
+        error: 'Erreur lors du traitement',
         details: error instanceof Error ? error.message : 'Erreur inconnue'
       },
       { status: 500 }
@@ -104,8 +130,7 @@ async function structureContent(
   transcript: string,
   videoTitle: string
 ): Promise<StructuredCourse> {
-  try {
-    const systemPrompt = `Tu es un expert pédagogique spécialisé dans la création de guides d'apprentissage structurés.
+  const systemPrompt = `Tu es un expert pédagogique spécialisé dans la création de guides d'apprentissage structurés.
 
 Ton rôle est d'analyser une transcription de tutoriel et de la découper en chapitres d'apprentissage logiques.
 
@@ -133,37 +158,33 @@ Format de sortie JSON attendu:
   ]
 }`
 
-    const userPrompt = `Titre: ${videoTitle}
+  const userPrompt = `Titre: ${videoTitle}
 
 Transcription avec timestamps:
 ${transcript}
 
 Analyse cette transcription et crée un cours structuré en chapitres suivant les règles ci-dessus.`
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt },
-      ],
-      response_format: { type: 'json_object' },
-      temperature: 0.7,
-    })
+  const completion = await openai.chat.completions.create({
+    model: 'gpt-4o',
+    messages: [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userPrompt },
+    ],
+    response_format: { type: 'json_object' },
+    temperature: 0.7,
+  })
 
-    const content = completion.choices[0].message.content
-    if (!content) {
-      throw new Error('Pas de contenu reçu de OpenAI')
-    }
-
-    const structured = JSON.parse(content) as StructuredCourse
-
-    if (!structured.chapters || !Array.isArray(structured.chapters)) {
-      throw new Error('Format de réponse invalide')
-    }
-
-    return structured
-  } catch (error) {
-    console.error('Erreur lors de la structuration:', error)
-    throw error
+  const content = completion.choices[0].message.content
+  if (!content) {
+    throw new Error('Pas de contenu reçu de OpenAI')
   }
+
+  const structured = JSON.parse(content) as StructuredCourse
+
+  if (!structured.chapters || !Array.isArray(structured.chapters)) {
+    throw new Error('Format de réponse invalide')
+  }
+
+  return structured
 }
