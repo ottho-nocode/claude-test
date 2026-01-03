@@ -15,6 +15,10 @@ import argparse
 import sys
 from pathlib import Path
 from typing import Optional
+from dotenv import load_dotenv
+
+# Charger les variables d'environnement depuis .env
+load_dotenv(Path(__file__).parent.parent / ".env")
 
 from ingest.transcriptions import TranscriptionLoader
 from ingest.knowledge_scraper import BubbleKnowledgeScraper
