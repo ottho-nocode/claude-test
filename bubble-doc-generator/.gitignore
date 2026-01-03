@@ -12,13 +12,16 @@ ENV/
 # Environment variables
 .env
 
+# Current project file
+.current-project
+
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# Data
+# Data (ancienne structure, à garder pour compatibilité)
 data/transcriptions/*.md
 !data/transcriptions/README.md
 !data/transcriptions/example-transcription.md
@@ -29,6 +32,11 @@ data/knowledge-base/*.md
 data/templates/*.pdf
 
 data/output/*.md
+
+# Projects (nouvelle structure multi-projets)
+projects/*
+!projects/.gitkeep
+!projects/*/README.md
 
 # RAG indexes
 *.faiss

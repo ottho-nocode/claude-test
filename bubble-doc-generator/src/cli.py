@@ -27,27 +27,68 @@ from generators.user_stories import UserStoriesGenerator
 from generators.user_flows import UserFlowsGenerator
 from generators.cahier_des_charges import CahierDesChargesGenerator
 from generators.screens_prompts import ScreensPromptsGenerator
+from project_manager import ProjectManager
 
 
 class BubbleDocCLI:
     """Interface CLI pour le générateur de documents Bubble.io"""
 
     def __init__(self):
-        self.data_dir = Path(__file__).parent.parent / "data"
-        self.output_dir = self.data_dir / "output"
+        self.base_dir = Path(__file__).parent.parent
+        self.data_dir = self.base_dir / "data"
+        self.project_manager = ProjectManager(self.base_dir)
+
+        # Projet en cours (sera défini par select_or_create_project)
+        self.current_project_path: Optional[Path] = None
+        self.transcriptions_dir: Optional[Path] = None
+        self.templates_dir: Optional[Path] = None
+        self.output_dir: Optional[Path] = None
+
         self.rag_system: Optional[RAGSystem] = None
+
+    def select_or_create_project(self):
+        """Sélectionne ou crée un projet"""
+        # Vérifier si un projet est déjà défini en ligne de commande ou si on doit demander
+        current_project = self.project_manager.get_current_project()
+
+        if not current_project:
+            # Aucun projet en cours, demander à l'utilisateur
+            self.current_project_path = self.project_manager.prompt_project_selection()
+        else:
+            # Utiliser le projet en cours
+            print(f"\n📌 Projet en cours : {current_project}")
+            use_current = input("Continuer avec ce projet ? [O/n] : ").strip().lower()
+
+            if use_current in ['', 'o', 'oui', 'y', 'yes']:
+                self.current_project_path = self.project_manager.select_project(current_project)
+                print(f"✅ Utilisation du projet '{current_project}'")
+            else:
+                self.current_project_path = self.project_manager.prompt_project_selection()
+
+        # Définir les paths du projet
+        self.transcriptions_dir = self.current_project_path / "transcriptions"
+        self.templates_dir = self.current_project_path / "templates"
+        self.output_dir = self.current_project_path / "output"
+
+        # Afficher les informations du projet
+        print(f"\n📁 Dossier du projet : {self.current_project_path}")
+        print(f"📝 Transcriptions : {self.transcriptions_dir}")
+        print(f"📄 Output : {self.output_dir}\n")
 
     def setup(self, import_path: Optional[str] = None):
         """Setup initial : import transcriptions et création de la base RAG"""
+        # Sélectionner ou créer un projet
+        self.select_or_create_project()
+
         print("🚀 Setup du projet Bubble Doc Generator...")
 
         # 1. Importer les transcriptions si nécessaire
         if import_path:
             print(f"\n📥 Import des transcriptions depuis {import_path}...")
-            loader = TranscriptionLoader(self.data_dir / "transcriptions")
+            loader = TranscriptionLoader(self.transcriptions_dir)
             loader.import_from_directory(import_path)
 
-        # 2. Scraper la base de connaissance Bubble.io
+        # 2. Scraper la base de connaissance Bubble.io (reste global)
         print("\n🌐 Scraping de la base de connaissance Bubble.io...")
         scraper = BubbleKnowledgeScraper(
             urls_file=self.data_dir / "knowledge-base" / "bubble-urls.txt",
@@ -59,7 +100,7 @@ class BubbleDocCLI:
         print("\n🧠 Création des embeddings pour le système RAG...")
         self.rag_system = RAGSystem(
             knowledge_dir=self.data_dir / "knowledge-base",
-            transcriptions_dir=self.data_dir / "transcriptions"
+            transcriptions_dir=self.transcriptions_dir
         )
         self.rag_system.build_index()
 
@@ -67,12 +108,16 @@ class BubbleDocCLI:
 
     def generate(self, doc_type: str):
         """Génère un type de document spécifique"""
+        # Sélectionner ou créer un projet
+        if not self.current_project_path:
+            self.select_or_create_project()
+
         # Initialize RAG if not already done
         if not self.rag_system:
             print("🧠 Chargement du système RAG...")
             self.rag_system = RAGSystem(
                 knowledge_dir=self.data_dir / "knowledge-base",
-                transcriptions_dir=self.data_dir / "transcriptions"
+                transcriptions_dir=self.transcriptions_dir
             )
             print("📚 Construction de l'index vectoriel...")
             self.rag_system.build_index()
@@ -131,7 +176,7 @@ class BubbleDocCLI:
         generator = CahierDesChargesGenerator(
             self.rag_system,
             self.output_dir,
-            template_path=self.data_dir / "templates"
+            template_path=self.templates_dir
         )
         output_file = generator.generate()
         print(f"✅ Cahier des charges généré: {output_file}")
