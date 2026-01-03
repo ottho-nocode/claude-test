@@ -89,12 +89,31 @@ class BubbleDocCLI:
             loader.import_from_directory(import_path)
 
         # 2. Scraper la base de connaissance Bubble.io (reste global)
-        print("\n🌐 Scraping de la base de connaissance Bubble.io...")
-        scraper = BubbleKnowledgeScraper(
-            urls_file=self.data_dir / "knowledge-base" / "bubble-urls.txt",
-            output_dir=self.data_dir / "knowledge-base"
-        )
-        scraper.scrape_all()
+        knowledge_base_dir = self.data_dir / "knowledge-base"
+
+        # Vérifier si la knowledge-base existe déjà
+        existing_files = list(knowledge_base_dir.glob("*.md")) if knowledge_base_dir.exists() else []
+
+        if existing_files:
+            print(f"\n📚 Base de connaissance Bubble.io détectée ({len(existing_files)} fichiers)")
+            rescrape = input("  Voulez-vous la rescaper ? [o/N] : ").strip().lower()
+
+            if rescrape in ['o', 'oui', 'y', 'yes']:
+                print("\n🌐 Rescraping de la base de connaissance Bubble.io...")
+                scraper = BubbleKnowledgeScraper(
+                    urls_file=self.data_dir / "knowledge-base" / "bubble-urls.txt",
+                    output_dir=self.data_dir / "knowledge-base"
+                )
+                scraper.scrape_all()
+            else:
+                print("  ✓ Utilisation de la base de connaissance existante")
+        else:
+            print("\n🌐 Scraping de la base de connaissance Bubble.io...")
+            scraper = BubbleKnowledgeScraper(
+                urls_file=self.data_dir / "knowledge-base" / "bubble-urls.txt",
+                output_dir=self.data_dir / "knowledge-base"
+            )
+            scraper.scrape_all()
 
         # 3. Créer les embeddings pour le RAG
         print("\n🧠 Création des embeddings pour le système RAG...")
