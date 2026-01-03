@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data
+data/transcriptions/*.md
+!data/transcriptions/README.md
+!data/transcriptions/example-transcription.md
+
+data/knowledge-base/*.md
+!data/knowledge-base/bubble-urls.txt
+
+data/templates/*.pdf
+
+data/output/*.md
+
+# RAG indexes
+*.faiss
+*.pkl
+
+# OS
+.DS_Store
+Thumbs.db

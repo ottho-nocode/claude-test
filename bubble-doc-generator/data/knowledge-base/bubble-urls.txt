@@ -1,0 +1,19 @@
+# URLs de la base de connaissance Bubble.io
+
+# Instructions :
+# - Ajoutez une URL par ligne
+# - Les lignes commençant par # sont ignorées (commentaires)
+# - Le script scrappe automatiquement toutes les URLs listées ici
+
+# Documentation officielle Bubble.io
+https://manual.bubble.io/
+https://manual.bubble.io/getting-started
+https://manual.bubble.io/core-resources/data
+https://manual.bubble.io/core-resources/workflows
+https://manual.bubble.io/design
+
+# Tutoriels et guides
+# https://bubble.io/blog
+# https://forum.bubble.io
+
+# Ajoutez vos URLs ici :
