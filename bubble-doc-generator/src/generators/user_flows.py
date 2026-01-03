@@ -63,11 +63,11 @@ INSTRUCTIONS:
 EXEMPLE DE SYNTAXE MERMAID:
 ```mermaid
 flowchart TD
-    A[Démarrer] --> B{Utilisateur connecté?}
+    A[Démarrer] --> B{{Utilisateur connecté?}}
     B -->|Oui| C[Accueil]
     B -->|Non| D[Page de connexion]
     D --> E[Saisir identifiants]
-    E --> F{Identifiants valides?}
+    E --> F{{Identifiants valides?}}
     F -->|Oui| C
     F -->|Non| D
 ```
