@@ -74,6 +74,8 @@ class BubbleDocCLI:
                 knowledge_dir=self.data_dir / "knowledge-base",
                 transcriptions_dir=self.data_dir / "transcriptions"
             )
+            print("📚 Construction de l'index vectoriel...")
+            self.rag_system.build_index()
 
         if doc_type == "stories":
             self._generate_user_stories()
