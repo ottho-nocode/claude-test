@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ottho Studio | Développement d'applications No-Code sur mesure</title>
-    <meta name="description" content="Ottho Studio développe votre application No-Code sur mesure. De l'idée au lancement en 4-8 semaines. MVP, apps métier, automatisations.">
+    <title>Ottho Entreprise | Développement d'applications No-Code sur mesure</title>
+    <meta name="description" content="Ottho développe votre application No-Code sur mesure. De l'idée au lancement en 4-8 semaines. MVP, apps métier, automatisations.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -16,19 +16,24 @@
         }
 
         :root {
-            --bg-primary: #0a0a0a;
-            --bg-secondary: #111111;
-            --bg-card: #1a1a1a;
-            --border-color: #2a2a2a;
-            --text-primary: #ffffff;
-            --text-secondary: #9ca3af;
-            --text-muted: #6b7280;
-            --accent: #7c3aed;
-            --accent-hover: #6d28d9;
+            --bg-primary: #FDF8F4;
+            --bg-white: #FFFFFF;
+            --bg-violet: #7C3AED;
+            --bg-violet-light: #F3EEFF;
+            --text-primary: #1a1a1a;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --accent: #7C3AED;
+            --accent-hover: #6D28D9;
             --accent-light: rgba(124, 58, 237, 0.1);
-            --success: #10b981;
-            --error: #ef4444;
-            --gradient: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
         }
 
         html {
@@ -36,7 +41,7 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
@@ -55,7 +60,7 @@
             left: 0;
             right: 0;
             z-index: 1000;
-            background: rgba(10, 10, 10, 0.8);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-color);
         }
@@ -70,14 +75,11 @@
         }
 
         .logo {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 800;
             color: var(--text-primary);
             text-decoration: none;
-        }
-
-        .logo span {
-            color: var(--accent);
+            letter-spacing: -0.5px;
         }
 
         .nav-links {
@@ -89,7 +91,7 @@
         .nav-links a {
             color: var(--text-secondary);
             text-decoration: none;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 500;
             transition: color 0.2s;
         }
@@ -102,9 +104,10 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            gap: 8px;
             padding: 12px 24px;
-            border-radius: 12px;
-            font-size: 14px;
+            border-radius: 100px;
+            font-size: 15px;
             font-weight: 600;
             text-decoration: none;
             transition: all 0.2s;
@@ -113,17 +116,18 @@
         }
 
         .btn-primary {
-            background: var(--gradient);
+            background: var(--accent);
             color: white;
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 40px rgba(124, 58, 237, 0.3);
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
         }
 
         .btn-secondary {
-            background: transparent;
+            background: var(--bg-white);
             color: var(--text-primary);
             border: 1px solid var(--border-color);
         }
@@ -138,26 +142,28 @@
             font-size: 16px;
         }
 
-        /* Hero Section */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            padding-top: 80px;
-            position: relative;
-            overflow: hidden;
+        .btn-icon {
+            font-size: 18px;
         }
 
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            width: 800px;
-            height: 800px;
-            background: radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, transparent 70%);
-            transform: translateX(-50%);
-            pointer-events: none;
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--bg-violet-light);
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 24px;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding-top: 120px;
+            padding-bottom: 80px;
         }
 
         .hero-content {
@@ -168,24 +174,20 @@
         }
 
         .hero-text h1 {
-            font-size: 56px;
+            font-size: 48px;
             font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 24px;
-        }
-
-        .hero-text h1 span {
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            line-height: 1.15;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            letter-spacing: -1px;
         }
 
         .hero-text p {
-            font-size: 20px;
+            font-size: 18px;
             color: var(--text-secondary);
             margin-bottom: 32px;
-            max-width: 500px;
+            max-width: 480px;
+            line-height: 1.7;
         }
 
         .hero-buttons {
@@ -194,45 +196,118 @@
             margin-bottom: 32px;
         }
 
-        .hero-badge {
-            display: inline-flex;
+        .hero-rating {
+            display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 100px;
+            gap: 12px;
             font-size: 14px;
             color: var(--text-secondary);
         }
 
-        .hero-badge .stars {
-            color: #fbbf24;
+        .stars {
+            color: #FBBF24;
+            font-size: 16px;
+            letter-spacing: 2px;
+        }
+
+        .rating-text strong {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .google-logo {
+            height: 20px;
+            opacity: 0.7;
         }
 
         .hero-visual {
             position: relative;
         }
 
-        .hero-mockup {
+        .hero-image {
+            width: 100%;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .hero-image img {
             width: 100%;
             height: 400px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
+            object-fit: cover;
+        }
+
+        .hero-image-placeholder {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #E0E7FF 0%, #C7D2FE 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text-muted);
+            color: var(--accent);
             font-size: 14px;
+        }
+
+        .hero-caption {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            right: 16px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 14px;
+        }
+
+        /* Logos Section */
+        .logos-section {
+            padding: 48px 0;
+        }
+
+        .logos-title {
+            text-align: center;
+            font-size: 15px;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            font-weight: 500;
+        }
+
+        .logos-grid {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 48px;
+            flex-wrap: wrap;
+            opacity: 0.6;
+        }
+
+        .logos-grid img {
+            height: 28px;
+            filter: grayscale(100%);
+            transition: all 0.2s;
+        }
+
+        .logos-grid img:hover {
+            filter: grayscale(0%);
+            opacity: 1;
+        }
+
+        .logo-placeholder {
+            padding: 8px 24px;
+            background: var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
         }
 
         /* Stats Section */
         .stats {
-            padding: 64px 0;
-            background: var(--bg-secondary);
-            border-top: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-violet);
+            padding: 48px 0;
+            margin: 48px 0;
         }
 
         .stats-grid {
@@ -243,34 +318,34 @@
         }
 
         .stat-item h3 {
-            font-size: 48px;
+            font-size: 42px;
             font-weight: 800;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: white;
+            margin-bottom: 8px;
         }
 
         .stat-item p {
-            color: var(--text-secondary);
+            color: rgba(255,255,255,0.8);
             font-size: 14px;
-            margin-top: 8px;
+            font-weight: 500;
         }
 
-        /* Problem/Solution Section */
-        .problem-solution {
-            padding: 120px 0;
+        /* Section Common */
+        .section {
+            padding: 80px 0;
         }
 
         .section-header {
             text-align: center;
-            margin-bottom: 64px;
+            margin-bottom: 56px;
         }
 
         .section-header h2 {
-            font-size: 40px;
-            font-weight: 700;
+            font-size: 36px;
+            font-weight: 800;
             margin-bottom: 16px;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
         }
 
         .section-header p {
@@ -280,73 +355,7 @@
             margin: 0 auto;
         }
 
-        .ps-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 48px;
-        }
-
-        .ps-card {
-            padding: 40px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-        }
-
-        .ps-card h3 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 24px;
-        }
-
-        .ps-card.problem h3 {
-            color: var(--error);
-        }
-
-        .ps-card.solution h3 {
-            color: var(--success);
-        }
-
-        .ps-list {
-            list-style: none;
-        }
-
-        .ps-list li {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 12px 0;
-            color: var(--text-secondary);
-        }
-
-        .ps-list .icon {
-            flex-shrink: 0;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .problem .icon {
-            background: rgba(239, 68, 68, 0.2);
-            color: var(--error);
-        }
-
-        .solution .icon {
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--success);
-        }
-
         /* Services Section */
-        .services {
-            padding: 120px 0;
-            background: var(--bg-secondary);
-        }
-
         .services-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -354,111 +363,107 @@
         }
 
         .service-card {
+            background: var(--bg-white);
             padding: 32px;
-            background: var(--bg-card);
+            border-radius: var(--radius-lg);
             border: 1px solid var(--border-color);
-            border-radius: 20px;
             transition: all 0.3s;
         }
 
         .service-card:hover {
-            border-color: var(--accent);
             transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent);
         }
 
         .service-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--accent-light);
-            border-radius: 12px;
+            width: 56px;
+            height: 56px;
+            background: var(--bg-violet-light);
+            border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 28px;
             margin-bottom: 20px;
         }
 
         .service-card h3 {
             font-size: 18px;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 12px;
+            color: var(--text-primary);
         }
 
         .service-card p {
             font-size: 14px;
             color: var(--text-secondary);
             line-height: 1.6;
+            margin-bottom: 16px;
         }
 
-        .service-card .tech {
-            margin-top: 16px;
-            font-size: 12px;
+        .service-tech {
+            font-size: 13px;
             color: var(--accent);
-            font-weight: 500;
+            font-weight: 600;
         }
 
         /* Process Section */
-        .process {
-            padding: 120px 0;
+        .process-section {
+            background: var(--bg-white);
         }
 
-        .process-timeline {
-            display: flex;
-            justify-content: space-between;
-            position: relative;
-            margin-top: 64px;
-        }
-
-        .process-timeline::before {
-            content: '';
-            position: absolute;
-            top: 32px;
-            left: 10%;
-            right: 10%;
-            height: 2px;
-            background: var(--border-color);
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 24px;
         }
 
         .process-step {
             text-align: center;
             position: relative;
-            flex: 1;
+        }
+
+        .process-step::after {
+            content: '→';
+            position: absolute;
+            right: -20px;
+            top: 32px;
+            color: var(--border-color);
+            font-size: 24px;
+        }
+
+        .process-step:last-child::after {
+            display: none;
         }
 
         .step-number {
             width: 64px;
             height: 64px;
-            background: var(--bg-card);
-            border: 2px solid var(--accent);
+            background: var(--bg-violet-light);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--accent);
             margin: 0 auto 20px;
-            position: relative;
-            z-index: 1;
         }
 
         .process-step h3 {
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 8px;
+            color: var(--text-primary);
         }
 
         .process-step p {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-muted);
         }
 
         /* Portfolio Section */
-        .portfolio {
-            padding: 120px 0;
-            background: var(--bg-secondary);
-        }
-
         .portfolio-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -466,34 +471,46 @@
         }
 
         .project-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
             overflow: hidden;
+            border: 1px solid var(--border-color);
             transition: all 0.3s;
         }
 
         .project-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--shadow-lg);
         }
 
         .project-image {
             height: 200px;
-            background: linear-gradient(135deg, var(--accent) 0%, #6366f1 100%);
+            background: linear-gradient(135deg, #E0E7FF 0%, #DDD6FE 100%);
             position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .project-image.green {
+            background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+        }
+
+        .project-image.orange {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
         }
 
         .project-tag {
             position: absolute;
             top: 16px;
             left: 16px;
-            padding: 6px 12px;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px);
+            padding: 6px 14px;
+            background: white;
             border-radius: 100px;
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 600;
+            color: var(--text-primary);
+            box-shadow: var(--shadow-sm);
         }
 
         .project-content {
@@ -502,14 +519,16 @@
 
         .project-content h3 {
             font-size: 18px;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 8px;
+            color: var(--text-primary);
         }
 
         .project-content p {
             font-size: 14px;
             color: var(--text-secondary);
             margin-bottom: 16px;
+            line-height: 1.6;
         }
 
         .project-result {
@@ -518,91 +537,109 @@
             gap: 8px;
             font-size: 14px;
             color: var(--accent);
-            font-weight: 500;
+            font-weight: 600;
         }
 
-        /* Testimonial Section */
-        .testimonial {
-            padding: 120px 0;
+        /* Testimonials Section */
+        .testimonials-section {
+            background: var(--bg-white);
         }
 
-        .testimonial-card {
-            max-width: 800px;
-            margin: 0 auto;
+        .testimonials-header {
             text-align: center;
-            padding: 64px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 32px;
-            position: relative;
+            margin-bottom: 16px;
         }
 
-        .testimonial-card::before {
-            content: '"';
-            position: absolute;
-            top: 32px;
-            left: 64px;
-            font-size: 120px;
+        .testimonials-header h2 {
+            font-size: 32px;
             font-weight: 800;
-            color: var(--accent);
-            opacity: 0.2;
-            line-height: 1;
+            font-style: italic;
         }
 
-        .testimonial-card blockquote {
-            font-size: 24px;
-            font-weight: 500;
-            line-height: 1.6;
-            margin-bottom: 32px;
-            position: relative;
-            z-index: 1;
+        .testimonials-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
         }
 
-        .testimonial-author {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
+        .testimonials-rating {
+            text-align: center;
+            margin-bottom: 48px;
         }
 
-        .author-avatar {
-            width: 56px;
-            height: 56px;
-            background: var(--gradient);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .testimonials-rating .stars {
             font-size: 20px;
+        }
+
+        .testimonials-rating span {
+            color: var(--accent);
             font-weight: 700;
         }
 
-        .author-info {
-            text-align: left;
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
         }
 
-        .author-info strong {
-            display: block;
+        .testimonial-card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+        }
+
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .testimonial-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--bg-violet-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--accent);
             font-size: 16px;
         }
 
-        .author-info span {
+        .testimonial-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .testimonial-info h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .testimonial-info .stars {
+            font-size: 12px;
+        }
+
+        .testimonial-card p {
             font-size: 14px;
             color: var(--text-secondary);
+            line-height: 1.6;
         }
 
-        .testimonial-stars {
-            color: #fbbf24;
-            font-size: 18px;
-            margin-left: 16px;
+        .testimonials-row-2 {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
         }
 
-        /* Why Us Section */
-        .why-us {
-            padding: 120px 0;
-            background: var(--bg-secondary);
-        }
-
+        /* Why Section */
         .why-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -610,15 +647,18 @@
         }
 
         .why-card {
+            background: var(--bg-white);
+            padding: 40px 32px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
             text-align: center;
-            padding: 40px;
         }
 
         .why-icon {
             width: 72px;
             height: 72px;
-            background: var(--accent-light);
-            border-radius: 20px;
+            background: var(--bg-violet-light);
+            border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -628,8 +668,9 @@
 
         .why-card h3 {
             font-size: 20px;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 12px;
+            color: var(--text-primary);
         }
 
         .why-card p {
@@ -639,8 +680,8 @@
         }
 
         /* FAQ Section */
-        .faq {
-            padding: 120px 0;
+        .faq-section {
+            background: var(--bg-white);
         }
 
         .faq-list {
@@ -661,16 +702,18 @@
             background: none;
             border: none;
             color: var(--text-primary);
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 600;
             cursor: pointer;
             text-align: left;
+            font-family: inherit;
         }
 
         .faq-question::after {
             content: '+';
             font-size: 24px;
             color: var(--accent);
+            font-weight: 400;
             transition: transform 0.3s;
         }
 
@@ -692,43 +735,45 @@
             padding-bottom: 24px;
             color: var(--text-secondary);
             line-height: 1.7;
+            font-size: 15px;
         }
 
         /* CTA Section */
         .cta {
-            padding: 120px 0;
-            background: var(--gradient);
+            background: var(--bg-violet);
+            padding: 80px 0;
             text-align: center;
         }
 
         .cta h2 {
-            font-size: 48px;
+            font-size: 40px;
             font-weight: 800;
+            color: white;
             margin-bottom: 16px;
         }
 
         .cta p {
-            font-size: 20px;
-            opacity: 0.9;
-            margin-bottom: 40px;
+            font-size: 18px;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 32px;
         }
 
         .cta .btn-white {
             background: white;
             color: var(--accent);
-            padding: 20px 40px;
-            font-size: 18px;
+            padding: 18px 36px;
+            font-size: 16px;
         }
 
         .cta .btn-white:hover {
             transform: translateY(-2px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
 
         .cta-secondary {
-            margin-top: 24px;
+            margin-top: 20px;
             font-size: 14px;
-            opacity: 0.8;
+            color: rgba(255,255,255,0.8);
         }
 
         .cta-secondary a {
@@ -738,8 +783,8 @@
 
         /* Footer */
         footer {
-            padding: 64px 0 32px;
             background: var(--bg-primary);
+            padding: 64px 0 32px;
             border-top: 1px solid var(--border-color);
         }
 
@@ -750,16 +795,21 @@
             margin-bottom: 48px;
         }
 
+        .footer-brand .logo {
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+
         .footer-brand p {
             color: var(--text-secondary);
             font-size: 14px;
-            margin-top: 16px;
-            max-width: 300px;
+            line-height: 1.7;
+            max-width: 280px;
         }
 
         .footer-column h4 {
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 20px;
             color: var(--text-primary);
         }
@@ -780,7 +830,7 @@
         }
 
         .footer-column a:hover {
-            color: var(--text-primary);
+            color: var(--accent);
         }
 
         .footer-bottom {
@@ -798,13 +848,13 @@
 
         .social-links {
             display: flex;
-            gap: 16px;
+            gap: 12px;
         }
 
         .social-links a {
             width: 40px;
             height: 40px;
-            background: var(--bg-card);
+            background: var(--bg-white);
             border: 1px solid var(--border-color);
             border-radius: 10px;
             display: flex;
@@ -812,12 +862,15 @@
             justify-content: center;
             color: var(--text-secondary);
             text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
             transition: all 0.2s;
         }
 
         .social-links a:hover {
             border-color: var(--accent);
             color: var(--accent);
+            background: var(--accent-light);
         }
 
         /* Responsive */
@@ -835,25 +888,36 @@
                 justify-content: center;
             }
 
+            .hero-rating {
+                justify-content: center;
+            }
+
             .hero-visual {
-                display: none;
+                max-width: 500px;
+                margin: 0 auto;
             }
 
             .services-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
 
-            .process-timeline {
-                flex-direction: column;
-                gap: 32px;
+            .process-grid {
+                grid-template-columns: repeat(3, 1fr);
             }
 
-            .process-timeline::before {
+            .process-step::after {
                 display: none;
             }
 
             .portfolio-grid {
                 grid-template-columns: 1fr;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .testimonials-grid,
+            .testimonials-row-2 {
+                grid-template-columns: repeat(2, 1fr);
             }
 
             .why-grid {
@@ -871,7 +935,7 @@
             }
 
             .hero-text h1 {
-                font-size: 36px;
+                font-size: 32px;
             }
 
             .section-header h2 {
@@ -880,13 +944,23 @@
 
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 24px;
+            }
+
+            .stat-item h3 {
+                font-size: 32px;
             }
 
             .services-grid {
                 grid-template-columns: 1fr;
             }
 
-            .ps-grid {
+            .process-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .testimonials-grid,
+            .testimonials-row-2 {
                 grid-template-columns: 1fr;
             }
 
@@ -895,7 +969,12 @@
             }
 
             .cta h2 {
-                font-size: 32px;
+                font-size: 28px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 20px;
             }
         }
     </style>
@@ -904,14 +983,17 @@
     <!-- Navigation -->
     <nav>
         <div class="nav-container">
-            <a href="/" class="logo">Ottho<span>.</span></a>
+            <a href="/" class="logo">otthō</a>
             <ul class="nav-links">
                 <li><a href="#services">Services</a></li>
                 <li><a href="#process">Process</a></li>
-                <li><a href="#portfolio">Projets</a></li>
+                <li><a href="#portfolio">Réalisations</a></li>
                 <li><a href="#faq">FAQ</a></li>
             </ul>
-            <a href="#contact" class="btn btn-primary">Réserver un appel</a>
+            <a href="#contact" class="btn btn-primary">
+                Parler à un conseiller
+                <span class="btn-icon">📞</span>
+            </a>
         </div>
     </nav>
 
@@ -920,23 +1002,46 @@
         <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
-                    <h1>On développe votre application <span>No-Code</span> sur mesure</h1>
-                    <p>De l'idée au lancement en 4-8 semaines. Sans code, sans friction, avec l'expertise du N°1 de la formation Bubble en France.</p>
+                    <div class="badge">🏢 L'agence No-Code N°1 en France 🇫🇷</div>
+                    <h1>On développe votre application sur mesure</h1>
+                    <p>Lancez votre MVP ou digitalisez vos process grâce à l'expertise de l'équipe qui a formé +4000 développeurs No-Code.</p>
                     <div class="hero-buttons">
-                        <a href="#contact" class="btn btn-primary btn-large">Réserver un appel découverte</a>
-                        <a href="#portfolio" class="btn btn-secondary btn-large">Voir nos projets</a>
+                        <a href="#contact" class="btn btn-primary btn-large">
+                            Réserver un appel découverte
+                            <span>→</span>
+                        </a>
                     </div>
-                    <div class="hero-badge">
+                    <div class="hero-rating">
                         <span class="stars">★★★★★</span>
-                        <span>4.9/5 sur 50+ projets livrés</span>
+                        <span class="rating-text"><strong>5/5</strong> sur plus de 180 avis</span>
+                        <span style="font-weight: 600; color: #4285F4;">G</span><span style="color: var(--text-muted);">oogle</span>
                     </div>
                 </div>
                 <div class="hero-visual">
-                    <div class="hero-mockup">
-                        <!-- Remplacer par une vraie image/mockup -->
-                        [Mockup de votre meilleur projet]
+                    <div class="hero-image">
+                        <div class="hero-image-placeholder">
+                            [Photo équipe / projet livré]
+                        </div>
+                    </div>
+                    <div class="hero-caption">
+                        Marketplace B2B - de l'idée au lancement en 6 semaines
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Logos Section -->
+    <section class="logos-section">
+        <div class="container">
+            <p class="logos-title">Ils nous ont fait confiance</p>
+            <div class="logos-grid">
+                <span class="logo-placeholder">Evaboot</span>
+                <span class="logo-placeholder">Odyseek</span>
+                <span class="logo-placeholder">Upfront</span>
+                <span class="logo-placeholder">ExcelFormulaBot</span>
+                <span class="logo-placeholder">Scrybecast</span>
+                <span class="logo-placeholder">Synthflow</span>
             </div>
         </div>
     </section>
@@ -946,123 +1051,69 @@
         <div class="container">
             <div class="stats-grid">
                 <div class="stat-item">
-                    <h3>50+</h3>
-                    <p>Projets livrés</p>
-                </div>
-                <div class="stat-item">
-                    <h3>3000+</h3>
-                    <p>Développeurs formés</p>
+                    <h3>+50</h3>
+                    <p>projets livrés</p>
                 </div>
                 <div class="stat-item">
                     <h3>4-8</h3>
-                    <p>Semaines de delivery</p>
+                    <p>semaines de delivery</p>
                 </div>
                 <div class="stat-item">
                     <h3>98%</h3>
-                    <p>Clients satisfaits</p>
+                    <p>de clients satisfaits</p>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Problem/Solution Section -->
-    <section class="problem-solution">
-        <div class="container">
-            <div class="section-header">
-                <h2>Vous avez une idée. On la construit.</h2>
-                <p>Le développement traditionnel est lent et coûteux. Le No-Code change la donne.</p>
-            </div>
-            <div class="ps-grid">
-                <div class="ps-card problem">
-                    <h3>Le problème</h3>
-                    <ul class="ps-list">
-                        <li>
-                            <span class="icon">✕</span>
-                            <span>Développer en code coûte 50-200K€ et prend 6+ mois</span>
-                        </li>
-                        <li>
-                            <span class="icon">✕</span>
-                            <span>Les agences classiques ne comprennent pas votre besoin</span>
-                        </li>
-                        <li>
-                            <span class="icon">✕</span>
-                            <span>Vous avez besoin d'aller vite pour tester le marché</span>
-                        </li>
-                        <li>
-                            <span class="icon">✕</span>
-                            <span>Impossible de modifier sans repasser par un dev</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="ps-card solution">
-                    <h3>Notre solution</h3>
-                    <ul class="ps-list">
-                        <li>
-                            <span class="icon">✓</span>
-                            <span>No-Code = 3 à 5x moins cher qu'un dev traditionnel</span>
-                        </li>
-                        <li>
-                            <span class="icon">✓</span>
-                            <span>Livraison en 4-8 semaines, pas en 6 mois</span>
-                        </li>
-                        <li>
-                            <span class="icon">✓</span>
-                            <span>Itérations rapides, on ajuste en temps réel</span>
-                        </li>
-                        <li>
-                            <span class="icon">✓</span>
-                            <span>Formation incluse : vous repartez autonome</span>
-                        </li>
-                    </ul>
+                <div class="stat-item">
+                    <h3>+4000</h3>
+                    <p>développeurs formés</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Services Section -->
-    <section class="services" id="services">
+    <section class="section" id="services">
         <div class="container">
             <div class="section-header">
-                <h2>Ce qu'on développe</h2>
-                <p>Des applications web et mobile performantes, livrées rapidement</p>
+                <h2>Ce qu'on développe pour vous</h2>
+                <p>Des applications web et mobile performantes, livrées en quelques semaines</p>
             </div>
             <div class="services-grid">
                 <div class="service-card">
                     <div class="service-icon">🚀</div>
                     <h3>MVP & Prototypes</h3>
                     <p>Validez votre idée rapidement avec un produit fonctionnel. Idéal pour lever des fonds ou tester le marché.</p>
-                    <div class="tech">Bubble • Xano</div>
+                    <div class="service-tech">Bubble • Xano</div>
                 </div>
                 <div class="service-card">
                     <div class="service-icon">💼</div>
                     <h3>Apps Web Métier</h3>
                     <p>CRM, dashboards, outils internes, portails clients. Des applications sur mesure pour votre activité.</p>
-                    <div class="tech">Bubble • WeWeb</div>
+                    <div class="service-tech">Bubble • WeWeb</div>
                 </div>
                 <div class="service-card">
                     <div class="service-icon">📱</div>
                     <h3>Apps Mobile</h3>
                     <p>Applications iOS et Android natives, publiées sur les stores. Performance et UX au rendez-vous.</p>
-                    <div class="tech">FlutterFlow</div>
+                    <div class="service-tech">FlutterFlow</div>
                 </div>
                 <div class="service-card">
                     <div class="service-icon">⚡</div>
                     <h3>Automatisations</h3>
                     <p>Connectez vos outils, automatisez vos process. Gagnez des heures chaque semaine.</p>
-                    <div class="tech">Make • Zapier • n8n</div>
+                    <div class="service-tech">Make • Zapier • n8n</div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Process Section -->
-    <section class="process" id="process">
+    <section class="section process-section" id="process">
         <div class="container">
             <div class="section-header">
-                <h2>Notre processus</h2>
-                <p>Une méthodologie éprouvée sur 50+ projets pour vous livrer rapidement</p>
+                <h2>Notre process</h2>
+                <p>Une méthodologie éprouvée sur +50 projets</p>
             </div>
-            <div class="process-timeline">
+            <div class="process-grid">
                 <div class="process-step">
                     <div class="step-number">1</div>
                     <h3>Discovery Call</h3>
@@ -1085,15 +1136,15 @@
                 </div>
                 <div class="process-step">
                     <div class="step-number">5</div>
-                    <h3>Lancement</h3>
-                    <p>Go live + formation</p>
+                    <h3>Go Live</h3>
+                    <p>Lancement + formation</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Portfolio Section -->
-    <section class="portfolio" id="portfolio">
+    <section class="section" id="portfolio">
         <div class="container">
             <div class="section-header">
                 <h2>Nos dernières réalisations</h2>
@@ -1113,19 +1164,19 @@
                     </div>
                 </div>
                 <div class="project-card">
-                    <div class="project-image" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    <div class="project-image green">
                         <span class="project-tag">App Métier</span>
                     </div>
                     <div class="project-content">
                         <h3>CRM Immobilier</h3>
-                        <p>Gestion complète des mandats, visites et transactions pour une agence immobilière</p>
+                        <p>Gestion complète des mandats, visites et transactions pour une agence</p>
                         <div class="project-result">
                             <span>✓</span> +200 utilisateurs actifs
                         </div>
                     </div>
                 </div>
                 <div class="project-card">
-                    <div class="project-image" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                    <div class="project-image orange">
                         <span class="project-tag">SaaS</span>
                     </div>
                     <div class="project-content">
@@ -1140,27 +1191,75 @@
         </div>
     </section>
 
-    <!-- Testimonial Section -->
-    <section class="testimonial">
+    <!-- Testimonials Section -->
+    <section class="section testimonials-section">
         <div class="container">
-            <div class="testimonial-card">
-                <blockquote>
-                    "Ottho a transformé notre idée en produit fonctionnel en 6 semaines. Leur expertise Bubble est incomparable. On a pu lever 500K€ grâce à ce MVP."
-                </blockquote>
-                <div class="testimonial-author">
-                    <div class="author-avatar">JD</div>
-                    <div class="author-info">
-                        <strong>Jean Dupont</strong>
-                        <span>CEO, StartupX</span>
+            <div class="testimonials-header">
+                <h2>Des clients satisfaits</h2>
+            </div>
+            <p class="testimonials-subtitle">Rejoignez les entreprises qui nous font confiance</p>
+            <div class="testimonials-rating">
+                <span class="stars">★★★★★</span>
+                <span>5/5</span> sur plus de 180 avis
+                <span style="font-weight: 600; color: #4285F4; margin-left: 8px;">G</span><span style="color: var(--text-muted);">oogle</span>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">ML</div>
+                        <div class="testimonial-info">
+                            <h4>Marc Lamouret</h4>
+                            <span class="stars">★★★★★</span>
+                        </div>
                     </div>
-                    <div class="testimonial-stars">★★★★★</div>
+                    <p>Une expérience incroyable avec une implication top level de l'ensemble de l'équipe d'encadrement.</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">NM</div>
+                        <div class="testimonial-info">
+                            <h4>Nathalie Morel</h4>
+                            <span class="stars">★★★★★</span>
+                        </div>
+                    </div>
+                    <p>Un formation intense avec une communauté au top et des mentors aux petits soins !</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">SP</div>
+                        <div class="testimonial-info">
+                            <h4>Sof PG</h4>
+                            <span class="stars">★★★★★</span>
+                        </div>
+                    </div>
+                    <p>Une équipe au top, à l'écoute qui vous aide à progresser avec une implication peu commune.</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">GR</div>
+                        <div class="testimonial-info">
+                            <h4>Geoffrey Riviere</h4>
+                            <span class="stars">★★★★★</span>
+                        </div>
+                    </div>
+                    <p>Des contenus très qualitatifs, de bons formateurs et surtout un CEO à l'image de son entreprise.</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">GB</div>
+                        <div class="testimonial-info">
+                            <h4>Guillaume Berthet</h4>
+                            <span class="stars">★★★★★</span>
+                        </div>
+                    </div>
+                    <p>J'ai participé au Bootcamp chez Ottho qui a été super, je recommande sans hésitation.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Why Us Section -->
-    <section class="why-us">
+    <!-- Why Section -->
+    <section class="section">
         <div class="container">
             <div class="section-header">
                 <h2>Pourquoi choisir Ottho ?</h2>
@@ -1170,7 +1269,7 @@
                 <div class="why-card">
                     <div class="why-icon">🏆</div>
                     <h3>Expertise N°1</h3>
-                    <p>Formateurs Bubble depuis 2020 et 3000+ développeurs formés. Personne ne connaît mieux ces outils que nous.</p>
+                    <p>Formateurs Bubble depuis 2020 et +4000 développeurs formés. Personne ne connaît mieux ces outils que nous.</p>
                 </div>
                 <div class="why-card">
                     <div class="why-icon">👥</div>
@@ -1187,7 +1286,7 @@
     </section>
 
     <!-- FAQ Section -->
-    <section class="faq" id="faq">
+    <section class="section faq-section" id="faq">
         <div class="container">
             <div class="section-header">
                 <h2>Questions fréquentes</h2>
@@ -1232,7 +1331,10 @@
         <div class="container">
             <h2>Prêt à lancer votre projet ?</h2>
             <p>Réservez un appel découverte gratuit de 30 minutes</p>
-            <a href="https://calendly.com/ottho" class="btn btn-white btn-large" target="_blank">Réserver mon appel</a>
+            <a href="https://calendly.com/ottho" class="btn btn-white btn-large" target="_blank">
+                Parler à un conseiller
+                <span>📞</span>
+            </a>
             <p class="cta-secondary">ou envoyez-nous votre brief à <a href="mailto:hello@ottho.co">hello@ottho.co</a></p>
         </div>
     </section>
@@ -1242,14 +1344,14 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <a href="/" class="logo">Ottho<span>.</span></a>
-                    <p>Le N°1 de la formation et du développement No-Code en France. +3000 apprenants formés depuis 2020.</p>
+                    <a href="/" class="logo">otthō</a>
+                    <p>Le N°1 de la formation et du développement No-Code en France. +4000 apprenants formés depuis 2020.</p>
                 </div>
                 <div class="footer-column">
-                    <h4>Studio</h4>
+                    <h4>Entreprise</h4>
                     <ul>
                         <li><a href="#services">Services</a></li>
-                        <li><a href="#portfolio">Projets</a></li>
+                        <li><a href="#portfolio">Réalisations</a></li>
                         <li><a href="#process">Process</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
@@ -1291,12 +1393,10 @@
                 const faqItem = button.parentElement;
                 const isActive = faqItem.classList.contains('active');
 
-                // Close all FAQ items
                 document.querySelectorAll('.faq-item').forEach(item => {
                     item.classList.remove('active');
                 });
 
-                // Toggle current item
                 if (!isActive) {
                     faqItem.classList.add('active');
                 }
