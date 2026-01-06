@@ -8,6 +8,7 @@ Usage:
     python cli.py generate flows
     python cli.py generate cdc
     python cli.py generate screens
+    python cli.py generate figma
     python cli.py generate all
 """
 
@@ -27,6 +28,7 @@ from generators.user_stories import UserStoriesGenerator
 from generators.user_flows import UserFlowsGenerator
 from generators.cahier_des_charges import CahierDesChargesGenerator
 from generators.screens_prompts import ScreensPromptsGenerator
+from generators.figma_designer import FigmaDesigner
 from project_manager import ProjectManager
 
 
@@ -149,11 +151,13 @@ class BubbleDocCLI:
             self._generate_cahier_des_charges()
         elif doc_type == "screens":
             self._generate_screens_prompts()
+        elif doc_type == "figma":
+            self._generate_figma_designs()
         elif doc_type == "all":
             self._generate_all()
         else:
             print(f"❌ Type de document inconnu: {doc_type}")
-            print("Types disponibles: stories, flows, cdc, screens, all")
+            print("Types disponibles: stories, flows, cdc, screens, figma, all")
             sys.exit(1)
 
     def _generate_user_stories(self):
@@ -208,6 +212,38 @@ class BubbleDocCLI:
         output_file = generator.generate()
         print(f"✅ Prompts écrans générés: {output_file}")
 
+    def _generate_figma_designs(self):
+        """Génère les designs Figma via MCP"""
+        print("\n🎨 Génération des designs Figma...")
+
+        # Vérifier que les prérequis existent
+        stories_file = self.output_dir / "user-stories.md"
+        flows_file = self.output_dir / "user-flows.md"
+        cdc_file = self.output_dir / "cahier-des-charges.md"
+        screens_file = self.output_dir / "screens-prompts.md"
+
+        missing_files = []
+        if not stories_file.exists():
+            missing_files.append("user-stories.md")
+        if not flows_file.exists():
+            missing_files.append("user-flows.md")
+        if not cdc_file.exists():
+            missing_files.append("cahier-des-charges.md")
+        if not screens_file.exists():
+            missing_files.append("screens-prompts.md")
+
+        if missing_files:
+            print(f"❌ Fichiers manquants: {', '.join(missing_files)}")
+            print("👉 Exécutez d'abord: python cli.py generate all")
+            sys.exit(1)
+
+        # Récupérer le nom du projet
+        project_name = self.current_project_path.name
+
+        generator = FigmaDesigner(self.rag_system, self.output_dir, project_name)
+        output_file = generator.generate()
+        print(f"✅ Designs Figma générés: {output_file}")
+
     def _generate_all(self):
         """Génère tous les documents dans l'ordre"""
         print("\n🚀 Génération de tous les documents...")
@@ -221,6 +257,18 @@ class BubbleDocCLI:
 
         input("\n⏸️  Appuyez sur Entrée pour continuer vers les prompts écrans...")
         self._generate_screens_prompts()
+
+        # Proposer la génération Figma (optionnelle)
+        print("\n" + "="*60)
+        print("🎨 GÉNÉRATION FIGMA (optionnel)")
+        print("="*60)
+        print("La génération Figma nécessite le serveur MCP Figma configuré.")
+        figma_choice = input("\nGénérer les designs Figma ? [O/n] : ").strip().lower()
+
+        if figma_choice in ['', 'o', 'oui', 'y', 'yes']:
+            self._generate_figma_designs()
+        else:
+            print("⏭️  Génération Figma ignorée")
 
         print("\n🎉 Tous les documents ont été générés avec succès!")
 
@@ -243,7 +291,7 @@ def main():
     generate_parser = subparsers.add_parser("generate", help="Générer des documents")
     generate_parser.add_argument(
         "type",
-        choices=["stories", "flows", "cdc", "screens", "all"],
+        choices=["stories", "flows", "cdc", "screens", "figma", "all"],
         help="Type de document à générer"
     )
 
