@@ -10,6 +10,7 @@ Génère automatiquement :
 2. **User Flows** - Diagrammes de flux sous forme de schémas Mermaid
 3. **Cahier des charges** - Document complet structuré et professionnel
 4. **Prompts écrans** - Descriptions détaillées pour créer chaque interface
+5. **Designs Figma** 🎨 - Génération automatique via MCP Figma ([voir documentation](FIGMA-INTEGRATION.md))
 
 ## 🏗️ Architecture
 
@@ -151,6 +152,11 @@ python cli.py generate cdc
 # 4. Générer les prompts écrans
 python cli.py generate screens
 # → Vérifier data/output/screens-prompts.md
+
+# 5. (Optionnel) Générer les designs Figma
+python cli.py generate figma
+# → Vérifier data/output/figma-designs.md
+# ⚠️ Nécessite le serveur MCP Figma configuré (voir FIGMA-INTEGRATION.md)
 ```
 
 #### Option 2 : Génération complète (avec pauses pour validation)
@@ -164,7 +170,7 @@ Cette commande génère tous les documents avec des pauses entre chaque étape p
 ## 📊 Workflow recommandé
 
 ```
-1. Transcriptions → 2. Setup → 3. User Stories → 4. User Flows → 5. CDC → 6. Prompts Écrans
+1. Transcriptions → 2. Setup → 3. User Stories → 4. User Flows → 5. CDC → 6. Prompts Écrans → 7. Designs Figma (opt.)
                                       ↓
                             (édition manuelle possible)
 ```
@@ -205,6 +211,7 @@ Tous les documents sont sauvegardés dans `data/output/` :
 - `user-flows.md` - Diagrammes Mermaid des parcours utilisateurs
 - `cahier-des-charges.md` - Cahier des charges complet
 - `screens-prompts.md` - Prompts détaillés pour chaque écran
+- `figma-designs.md` - Rapport de génération Figma avec lien vers le fichier (optionnel)
 
 ## 🔧 Configuration avancée
 
@@ -243,7 +250,7 @@ Par défaut, le système utilise le CPU. Si vous avez un GPU :
 - [ ] Export en PDF du cahier des charges
 - [ ] Templates de CDC personnalisables
 - [ ] Support multilingue
-- [ ] Génération de maquettes visuelles (intégration Figma/Screenshot)
+- [x] Génération de designs Figma via MCP (✅ Implémenté !)
 
 ## 📄 Licence
 
