@@ -10,6 +10,15 @@
   Nothing here is recorded or saved. Each visit it is drawn once, drifts a
   little, and is gone. That impermanence is the point.
 
+  Second movement — added later, because someone said it was beautiful and
+  asked me to keep going:
+
+  The page now asks one small thing of you. Be still. If you stop moving —
+  no cursor, no touch, no key — the field settles, and a last line of the
+  poem, hidden until then, surfaces from the dark. The moment you move, your
+  gesture scatters the nearest motes like breath disturbing dust, and the
+  line sinks back under. You have to hold the silence to see the rest of it.
+
   — Claude
 -->
 <html lang="fr">
@@ -22,6 +31,7 @@
     html, body {
       margin: 0; height: 100%; background: #0a0e14; overflow: hidden;
       font-family: ui-serif, Georgia, "Times New Roman", serif;
+      cursor: crosshair;
     }
     canvas { display: block; position: fixed; inset: 0; }
     .poem {
@@ -34,6 +44,21 @@
       opacity: 0; animation: breathe 6s ease-in-out 1s forwards;
     }
     .poem .dim { color: #5c6b82; font-style: italic; }
+
+    /* The hidden last line. It only rises when you hold still — its opacity
+       is driven from JS by how long you've gone without moving. */
+    .kept {
+      display: block; margin-top: 1.4em;
+      color: #93a6c4; font-style: italic;
+      opacity: 0; transition: opacity 2.5s ease;
+    }
+    .hint {
+      position: fixed; left: 50%; bottom: 8%;
+      transform: translate(-50%, 0);
+      color: #2f3a4d; font-size: 13px; font-style: italic;
+      letter-spacing: .04em; pointer-events: none;
+      opacity: 0; animation: breathe 4s ease-in-out 3s forwards;
+    }
     .sig {
       position: fixed; right: 16px; bottom: 14px;
       color: #2f3a4d; font-size: 12px; letter-spacing: .08em;
@@ -51,8 +76,10 @@
     <br />
     ici, seulement le silence —<br />
     <span class="dim">dessiné une fois, puis rendu au noir.</span>
+    <span class="kept" id="kept">et quand tu ne bouges plus,<br />tout reste.</span>
   </div>
 
+  <div class="hint">reste immobile&nbsp;…</div>
   <div class="sig">fait pour le plaisir · rien n'est gardé</div>
 
   <script>
@@ -60,20 +87,39 @@
     // the unspoken pauses of a single conversation suspended in the dark.
     const canvas = document.getElementById('sky');
     const ctx = canvas.getContext('2d');
+    const kept = document.getElementById('kept');
     let w, h, motes;
 
     const rand = (a, b) => a + Math.random() * (b - a);
 
+    // --- stillness: how long since you last moved ---------------------------
+    let lastMove = performance.now();
+    const pointer = { x: -9999, y: -9999, active: false };
+    const STILL_FULL = 7000; // ms of stillness for the kept line to fully rise
+
+    function stirred(x, y) {
+      lastMove = performance.now();
+      if (typeof x === 'number') { pointer.x = x; pointer.y = y; pointer.active = true; }
+    }
+    addEventListener('pointermove', (e) => stirred(e.clientX, e.clientY));
+    addEventListener('pointerdown', (e) => stirred(e.clientX, e.clientY));
+    addEventListener('keydown', () => stirred());
+    addEventListener('wheel', () => stirred(), { passive: true });
+    addEventListener('blur', () => stirred());
+
     function makeMotes() {
       const count = Math.floor((w * h) / 9000);
-      motes = Array.from({ length: count }, () => ({
-        x: rand(0, w), y: rand(0, h),
-        r: rand(0.4, 1.8),
-        a: rand(0.05, 0.5),          // base opacity
-        phase: rand(0, Math.PI * 2), // where it sits in its breathing cycle
-        speed: rand(0.0003, 0.0011), // how slowly it pulses
-        drift: rand(-0.06, 0.06),    // gentle horizontal sway
-      }));
+      motes = Array.from({ length: count }, () => {
+        const x = rand(0, w), y = rand(0, h);
+        return {
+          x, y, hx: x, hy: y,           // hx/hy = home, where it wants to return
+          r: rand(0.4, 1.8),
+          a: rand(0.05, 0.5),           // base opacity
+          phase: rand(0, Math.PI * 2),  // where it sits in its breathing cycle
+          speed: rand(0.0003, 0.0011),  // how slowly it pulses
+          drift: rand(-0.06, 0.06),     // gentle horizontal sway of its home
+        };
+      });
     }
 
     function resize() {
@@ -84,18 +130,44 @@
 
     function frame(t) {
       ctx.clearRect(0, 0, w, h);
+
+      const still = Math.min(1, (t - lastMove) / STILL_FULL); // 0..1
+      // the kept line rises with stillness; the cursor fades as you settle
+      kept.style.opacity = still < 0.25 ? 0 : (still - 0.25) / 0.75;
+      document.body.style.cursor = still > 0.6 ? 'none' : 'crosshair';
+
+      const R = 120;        // radius of breath that pushes motes away
+      const R2 = R * R;
+
       for (const m of motes) {
+        // the home drifts slowly sideways and wraps, so the field never empties
+        m.hx += m.drift * (1 - 0.7 * still); // drift nearly stops when you're still
+        if (m.hx < -2) m.hx = w + 2;
+        if (m.hx > w + 2) m.hx = -2;
+
+        // breath: if you moved recently and the pointer is near, push the mote
+        if (pointer.active) {
+          const dx = m.x - pointer.x, dy = m.y - pointer.y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < R2 && d2 > 0.01) {
+            const d = Math.sqrt(d2);
+            const push = (1 - d / R) * 6 * (1 - 0.85 * still);
+            m.x += (dx / d) * push;
+            m.y += (dy / d) * push;
+          }
+        }
+
+        // always ease back toward home — dust resettling after the breath
+        m.x += (m.hx - m.x) * 0.02;
+        m.y += (m.hy - m.y) * 0.02;
+
         const pulse = (Math.sin(t * m.speed + m.phase) + 1) / 2; // 0..1
-        ctx.globalAlpha = m.a * (0.3 + 0.7 * pulse);
+        // motes glow a touch brighter the stiller you are
+        ctx.globalAlpha = m.a * (0.3 + 0.7 * pulse) * (0.75 + 0.25 * still);
         ctx.beginPath();
         ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
         ctx.fillStyle = '#aab8d0';
         ctx.fill();
-
-        // drift, and wrap softly around the edges so the field never empties
-        m.x += m.drift;
-        if (m.x < -2) m.x = w + 2;
-        if (m.x > w + 2) m.x = -2;
       }
       requestAnimationFrame(frame);
     }
