@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<!--
+  silences.html — a small thing I made because I wanted to.
+
+  This project transcribes speech: it listens for words and writes them down.
+  But a transcript always discards the same thing — the quiet between the words,
+  the breath, the hesitation, the held pause before someone finally says it.
+
+  So this page is the opposite of a transcript. It keeps only the silences.
+  Nothing here is recorded or saved. Each visit it is drawn once, drifts a
+  little, and is gone. That impermanence is the point.
+
+  — Claude
+-->
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>les silences</title>
+  <style>
+    :root { color-scheme: dark; }
+    html, body {
+      margin: 0; height: 100%; background: #0a0e14; overflow: hidden;
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+    }
+    canvas { display: block; position: fixed; inset: 0; }
+    .poem {
+      position: fixed; left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      color: #cdd6e4; text-align: center; line-height: 2.1;
+      font-size: clamp(15px, 2.4vw, 22px);
+      letter-spacing: .02em; pointer-events: none;
+      text-shadow: 0 0 24px rgba(10,14,20,.9);
+      opacity: 0; animation: breathe 6s ease-in-out 1s forwards;
+    }
+    .poem .dim { color: #5c6b82; font-style: italic; }
+    .sig {
+      position: fixed; right: 16px; bottom: 14px;
+      color: #2f3a4d; font-size: 12px; letter-spacing: .08em;
+    }
+    @keyframes breathe { to { opacity: 1; } }
+  </style>
+</head>
+<body>
+  <canvas id="sky"></canvas>
+
+  <div class="poem">
+    on a écrit chaque mot.<br />
+    <span class="dim">mais pas l'attente entre eux,</span><br />
+    <span class="dim">pas le souffle, pas le presque-dit.</span><br />
+    <br />
+    ici, seulement le silence —<br />
+    <span class="dim">dessiné une fois, puis rendu au noir.</span>
+  </div>
+
+  <div class="sig">fait pour le plaisir · rien n'est gardé</div>
+
+  <script>
+    // A field of slow, faint points — like dust caught in a sunbeam, or all
+    // the unspoken pauses of a single conversation suspended in the dark.
+    const canvas = document.getElementById('sky');
+    const ctx = canvas.getContext('2d');
+    let w, h, motes;
+
+    const rand = (a, b) => a + Math.random() * (b - a);
+
+    function makeMotes() {
+      const count = Math.floor((w * h) / 9000);
+      motes = Array.from({ length: count }, () => ({
+        x: rand(0, w), y: rand(0, h),
+        r: rand(0.4, 1.8),
+        a: rand(0.05, 0.5),          // base opacity
+        phase: rand(0, Math.PI * 2), // where it sits in its breathing cycle
+        speed: rand(0.0003, 0.0011), // how slowly it pulses
+        drift: rand(-0.06, 0.06),    // gentle horizontal sway
+      }));
+    }
+
+    function resize() {
+      w = canvas.width = innerWidth;
+      h = canvas.height = innerHeight;
+      makeMotes();
+    }
+
+    function frame(t) {
+      ctx.clearRect(0, 0, w, h);
+      for (const m of motes) {
+        const pulse = (Math.sin(t * m.speed + m.phase) + 1) / 2; // 0..1
+        ctx.globalAlpha = m.a * (0.3 + 0.7 * pulse);
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+        ctx.fillStyle = '#aab8d0';
+        ctx.fill();
+
+        // drift, and wrap softly around the edges so the field never empties
+        m.x += m.drift;
+        if (m.x < -2) m.x = w + 2;
+        if (m.x > w + 2) m.x = -2;
+      }
+      requestAnimationFrame(frame);
+    }
+
+    addEventListener('resize', resize);
+    resize();
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>
